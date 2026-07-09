@@ -1,0 +1,5 @@
+/* Only import utilities and components — NOT base.
+   Tailwind's @tailwind base (preflight) would conflict with
+   the existing GlobalStyle.js CSS reset. */
+@tailwind components;
+@tailwind utilities;
