@@ -8,15 +8,16 @@ import TECH_ICON_DATA from './icon-data';
 
 // ─── Rough.js tuning ──────────────────────────────────────────────────────────
 // Nudge these to taste. Goal is CRISP + RECOGNIZABLE, not chaotic scribble:
-// a single clean outline pass, no fill, gentle bow. `seed` is fixed so every
-// build/render produces the identical stroke (deterministic + cache-friendly).
+// low wobble, single clean pass, outline only. `fill` is deliberately OMITTED —
+// any fill value (even 'none') asks Rough for fill geometry; omitting the key is
+// how you get pure stroke output. `seed` is fixed so every render produces the
+// identical stroke (deterministic + cache-friendly).
 const ROUGH_OPTIONS = {
-  roughness: 0.7,
-  bowing: 0.6,
-  strokeWidth: 1.5, // rendered at a constant 1.5 CSS px via non-scaling-stroke
+  roughness: 0.6,
+  bowing: 0.5,
+  strokeWidth: 1.4, // constant 1.4 CSS px at any size via non-scaling-stroke
   disableMultiStroke: true, // one clean pass, not a hairy double stroke
   stroke: 'currentColor', // tinted by the accent var on the layer (see below)
-  fill: 'none', // outline only
   seed: 42,
 };
 
@@ -25,27 +26,29 @@ const ACCENT = 'var(--green)'; // monochrome accent tint for the whole layer
 const LAYER_OPACITY = 0.11; // within the requested 0.08–0.14 band
 
 // ─── Placement ────────────────────────────────────────────────────────────────
-// Each icon hugs the OUTSIDE of the centered ~1000px content column, so it can
-// never overlap the body text at any viewport width:
-//   side  : which margin (left | right)
-//   gap   : px out from the column edge (half-column = 500px) toward the screen
-//   top   : vertical position in vh from the top of the page (hero starts at 0)
-//   size  : rendered icon box in px
+// The layer mounts INSIDE the About section (position: relative), so icons are
+// anchored to the OUTSIDE of the section's own box: `calc(100% + gap)` puts them
+// in the empty desktop gutters flanking the 900px content column. Overlap with
+// the About text/photo is geometrically impossible — they live inside that box.
+//   side : which gutter (left | right)
+//   gap  : px between the section edge and the icon's near edge
+//   top  : vertical position, % of section height
+//   size : rendered icon box in px
+// Keep gap + size ≲ 150 so nothing clips at 1200px viewports.
 // Add/remove/re-order freely — this is just data. `slug` maps into icon-data.js.
-// NOTE: 'express' is intentionally not placed here — its Simple Icons path uses
-// compact arc-flag notation that Rough.js can't parse cleanly, so it would fall
-// back to a crisp (non-sketch) logo. It stays in icon-data.js/logos for 'clean'
-// mode; just add a line below if you want it in the layer anyway (it will render
-// crisp via the automatic fallback rather than as a scribble).
+// Icons flagged `forceClean` in icon-data.js (redis, express) render as crisp
+// clean logos even in sketch mode — a curated mix beats a uniform scribble.
+// 'express' is unplaced by default; add a line below to include it (it will
+// render clean, never a scribble).
 const PLACEMENTS = [
-  { slug: 'python', side: 'left', gap: 24, top: 16, size: 88 },
-  { slug: 'react', side: 'right', gap: 20, top: 22, size: 92 },
-  { slug: 'nextdotjs', side: 'right', gap: 180, top: 46, size: 54 },
-  { slug: 'nodedotjs', side: 'left', gap: 150, top: 62, size: 64 },
-  { slug: 'typescript', side: 'right', gap: 44, top: 78, size: 60 },
-  { slug: 'redis', side: 'left', gap: 40, top: 112, size: 70 },
-  { slug: 'javascript', side: 'right', gap: 28, top: 150, size: 72 },
-  { slug: 'tailwindcss', side: 'left', gap: 70, top: 152, size: 76 },
+  { slug: 'python', side: 'left', gap: 28, top: 4, size: 64 },
+  { slug: 'javascript', side: 'right', gap: 34, top: 6, size: 56 },
+  { slug: 'redis', side: 'left', gap: 76, top: 30, size: 56 },
+  { slug: 'react', side: 'right', gap: 78, top: 32, size: 72 },
+  { slug: 'tailwindcss', side: 'left', gap: 26, top: 56, size: 68 },
+  { slug: 'typescript', side: 'right', gap: 24, top: 60, size: 54 },
+  { slug: 'nodedotjs', side: 'left', gap: 64, top: 82, size: 60 },
+  { slug: 'nextdotjs', side: 'right', gap: 66, top: 84, size: 52 },
 ];
 
 const ICONS_BY_SLUG = TECH_ICON_DATA.reduce((acc, icon) => {
@@ -57,6 +60,9 @@ const ICONS_BY_SLUG = TECH_ICON_DATA.reduce((acc, icon) => {
 // Roughen each icon's path(s) EXACTLY ONCE, keyed by slug, and stash the
 // resulting <path> markup. Instances reuse the cached string; animation frames
 // never re-roughen (that would jitter). Runs client-side only (needs the DOM).
+// Rough only ever sees LINE-ART sources: `sketchPaths` (outline/monoline/letter
+// glyphs) when the original logo is a filled badge or silhouette — tracing
+// those is what produced the ghost-box/scribble bug.
 const roughMarkupCache = new Map();
 
 const getRoughMarkup = icon => {
@@ -70,7 +76,8 @@ const getRoughMarkup = icon => {
   try {
     const svgNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     const rc = rough.svg(svgNode);
-    icon.paths.forEach(d => svgNode.appendChild(rc.path(d, ROUGH_OPTIONS)));
+    const source = icon.sketchPaths || icon.paths;
+    source.forEach(d => svgNode.appendChild(rc.path(d, ROUGH_OPTIONS)));
     markup = svgNode.innerHTML || null;
   } catch (err) {
     // Some SVG paths (e.g. compact arc-flag notation) can't be roughened.
@@ -93,8 +100,10 @@ const TechIcon = ({ icon, style }) => {
   const ref = useRef(null);
   const [sketchFailed, setSketchFailed] = useState(false);
 
+  const wantsSketch = style === 'sketch' && !icon.forceClean;
+
   useEffect(() => {
-    if (style !== 'sketch' || !ref.current) {
+    if (!wantsSketch || !ref.current) {
       return;
     }
     const markup = getRoughMarkup(icon);
@@ -103,11 +112,11 @@ const TechIcon = ({ icon, style }) => {
     } else if (typeof document !== 'undefined') {
       setSketchFailed(true); // rough couldn't parse it → fall back to clean logo
     }
-  }, [icon, style]);
+  }, [icon, wantsSketch]);
 
-  // 'clean' (or a sketch that couldn't be roughened) → crisp stock logo,
-  // filled with the accent (monochrome).
-  if (style === 'clean' || sketchFailed) {
+  // 'clean', a forceClean icon (failed the glance test), or a sketch that
+  // couldn't be roughened → crisp stock logo, filled with the accent.
+  if (!wantsSketch || sketchFailed) {
     return (
       <svg viewBox={icon.viewBox} aria-hidden="true" focusable="false">
         {icon.paths.map((d, i) => (
@@ -118,7 +127,15 @@ const TechIcon = ({ icon, style }) => {
   }
 
   // 'sketch' → Rough.js outline injected on mount (cached, generated once).
-  return <svg ref={ref} viewBox={icon.viewBox} aria-hidden="true" focusable="false" />;
+  // Sketch sources may use their own viewBox (devicon node line art is 128×128).
+  return (
+    <svg
+      ref={ref}
+      viewBox={icon.sketchViewBox || icon.viewBox}
+      aria-hidden="true"
+      focusable="false"
+    />
+  );
 };
 
 TechIcon.propTypes = {
@@ -127,28 +144,31 @@ TechIcon.propTypes = {
     name: PropTypes.string,
     viewBox: PropTypes.string.isRequired,
     paths: PropTypes.arrayOf(PropTypes.string).isRequired,
+    sketchPaths: PropTypes.arrayOf(PropTypes.string),
+    sketchViewBox: PropTypes.string,
+    forceClean: PropTypes.bool,
   }).isRequired,
   style: PropTypes.oneOf(['sketch', 'clean']).isRequired,
 };
 
 // ─── Styled layer ─────────────────────────────────────────────────────────────
+// Fills the About section's box (the section is position: relative); icons hang
+// OUTSIDE it in the gutters, so no overflow clipping here.
 const StyledIconLayer = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200vh; /* covers hero + about band; icons never render past this */
-  z-index: -1; /* behind all content */
+  inset: 0;
+  z-index: -1; /* behind the section's content */
   pointer-events: none;
   color: ${ACCENT};
   opacity: ${LAYER_OPACITY};
-  overflow: hidden;
   will-change: transform;
   transition: transform 0.4s var(--easing);
 
-  /* Side margins collapse below tablet — hide entirely so the layer can never
-     sit under body text on small screens. No layout impact (position:absolute). */
-  @media (max-width: 768px) {
+  /* The About gutters shrink to zero once the viewport nears the section's
+     900px + main padding (~1100px) — below that, icons would clip half
+     off-screen, and under 768px they'd sit behind body text. Hide entirely;
+     no layout impact (position: absolute). */
+  @media (max-width: 1080px) {
     display: none;
   }
 
@@ -162,9 +182,11 @@ const StyledIconLayer = styled.div`
       overflow: visible;
     }
 
-    /* Keep the hand-drawn stroke a crisp constant width at any icon size / DPR. */
+    /* Constant hand-drawn stroke width at any icon size / DPR, soft joins. */
     svg path {
       vector-effect: non-scaling-stroke;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
   }
 
@@ -175,7 +197,7 @@ const StyledIconLayer = styled.div`
       transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(0, -10px, 0);
+      transform: translate3d(0, -8px, 0);
     }
   }
 
@@ -207,8 +229,8 @@ const TechStackIcons = () => {
       }
       frame = requestAnimationFrame(() => {
         frame = null;
-        const x = (e.clientX / window.innerWidth - 0.5) * 14;
-        const y = (e.clientY / window.innerHeight - 0.5) * 14;
+        const x = (e.clientX / window.innerWidth - 0.5) * 12;
+        const y = (e.clientY / window.innerHeight - 0.5) * 12;
         if (layerRef.current) {
           layerRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         }
@@ -237,15 +259,15 @@ const TechStackIcons = () => {
         if (!icon) {
           return null;
         }
-        // Anchor to the outside edge of the centered 1000px column.
+        // Anchor to the OUTSIDE edge of the section box (the empty gutter).
         const edge = p.side === 'left' ? 'right' : 'left';
         return (
           <span
             key={`${p.slug}-${i}`}
             className="tech-icon"
             style={{
-              top: `${p.top}vh`,
-              [edge]: `calc(50% + 500px + ${p.gap}px)`,
+              top: `${p.top}%`,
+              [edge]: `calc(100% + ${p.gap}px)`,
               width: `${p.size}px`,
               height: `${p.size}px`,
               // Stagger drift so icons don't pulse in unison.

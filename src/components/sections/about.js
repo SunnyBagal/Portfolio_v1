@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { srConfig } from '@config';
 import sr from '@utils/sr';
 import { usePrefersReducedMotion } from '@hooks';
+import TechStackIcons from '@components/ui/tech-stack-icons';
 
 const StyledAboutSection = styled.section`
+  position: relative; /* anchors the decorative tech-icon gutter layer */
   max-width: 900px;
 
   .inner {
@@ -125,25 +127,43 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  const skills = ['Python', 'JavaScript','TypeScript', 'Node.js', 'Express.js', 'Tailwind CSS', 'React/Next', 'PostgreSQL/MongoDB/Redis'];
+  const skills = [
+    'Python',
+    'JavaScript',
+    'TypeScript',
+    'Node.js',
+    'Express.js',
+    'Tailwind CSS',
+    'React/Next',
+    'PostgreSQL/MongoDB/Redis',
+  ];
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
+      <TechStackIcons />
       <h2 className="numbered-heading">About Me</h2>
 
       <div className="inner">
         <StyledText>
           <div>
             <p>
-              Hello! I’m a developer who enjoys building things that live on the internet. I like building things that are simple on the surface and thoughtful underneath. I enjoy solving problems — especially the kind that make you question your life choices at 2 AM — which is where my interest in Data Structures and Algorithms comes in.
+              Hello! I’m a developer who enjoys building things that live on the internet. I like
+              building things that are simple on the surface and thoughtful underneath. I enjoy
+              solving problems — especially the kind that make you question your life choices at 2
+              AM — which is where my interest in Data Structures and Algorithms comes in.
             </p>
 
             <p>
-              Over time, that curiosity turned into a strong foundation in Python, JavaScript, React, and Node.js. I enjoy working at the intersection of logic and design, where creating smooth user experiences meets writing clean, scalable code.
+              Over time, that curiosity turned into a strong foundation in Python, JavaScript,
+              React, and Node.js. I enjoy working at the intersection of logic and design, where
+              creating smooth user experiences meets writing clean, scalable code.
             </p>
 
             <p>
-              Currently, I’m a <u>final-year student</u>, focused on improving my problem-solving skills and building real-world projects that push me to grow as a developer. Most of my learning comes from experimenting, breaking things, and figuring out how to make them better.
+              Currently, I’m a <u>final-year student</u>, focused on improving my problem-solving
+              skills and building real-world projects that push me to grow as a developer. Most of
+              my learning comes from experimenting, breaking things, and figuring out how to make
+              them better.
             </p>
 
             <p>Here are a few technologies I’ve been working with recently:</p>
@@ -172,4 +192,3 @@ const About = () => {
 };
 
 export default About;
-
