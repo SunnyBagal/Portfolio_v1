@@ -23,7 +23,7 @@ const ROUGH_OPTIONS = {
 
 // ─── Layer appearance ─────────────────────────────────────────────────────────
 const ACCENT = 'var(--green)'; // monochrome accent tint for the whole layer
-const LAYER_OPACITY = 0.11; // within the requested 0.08–0.14 band
+const LAYER_OPACITY = 0.1; // quiet backdrop — within the 0.08–0.12 band
 
 // ─── Placement ────────────────────────────────────────────────────────────────
 // The layer mounts INSIDE the About section (position: relative), so icons are
@@ -181,13 +181,26 @@ const StyledIconLayer = styled.div`
       height: 100%;
       overflow: visible;
     }
+  }
 
-    /* Constant hand-drawn stroke width at any icon size / DPR, soft joins. */
-    svg path {
-      vector-effect: non-scaling-stroke;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+  /* CLEAN (shipped): force the WHOLE set to one accent tint. A CSS 'fill'
+     always beats an element's inline fill="#brand" presentation attribute, so
+     applying it to the svg and every descendant guarantees no original brand
+     colour can leak through on any path/shape — the robust equivalent of
+     inlining + fill override (preferred here over mask-image because the SVGs
+     are already inlined). Stroke is left untouched so nothing sprouts an
+     accidental outline. */
+  &[data-style='clean'] .tech-icon svg,
+  &[data-style='clean'] .tech-icon svg * {
+    fill: currentColor;
+  }
+
+  /* SKETCH (dormant, behind the flag): keep the hand-drawn stroke crisp at any
+     size / DPR with soft joins. */
+  &[data-style='sketch'] .tech-icon svg path {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   /* Slow vertical drift — transform + opacity only (no re-roughening, no spin). */
@@ -252,6 +265,7 @@ const TechStackIcons = () => {
   return (
     <StyledIconLayer
       ref={layerRef}
+      data-style={style}
       data-animate={(!prefersReducedMotion).toString()}
       aria-hidden="true">
       {PLACEMENTS.map((p, i) => {

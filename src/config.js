@@ -1,15 +1,17 @@
 module.exports = {
   email: 'sunnybagal.1110@gmail.com',
 
-  // ─── Decorative hand-drawn tech-stack backdrop ────────────────────────────
-  // Single switch that controls the entire background icon layer.
+  // ─── Decorative tech-stack backdrop ───────────────────────────────────────
+  // Single switch that controls the entire background icon layer (About section).
   //   enabled: false  -> render nothing (no layout shift, clean original site)
-  //   style: 'sketch' -> Rough.js hand-drawn version
-  //   style: 'clean'  -> plain crisp stock logos (original SVGs, untouched)
-  // Reverting the feature = flip these two values and reload. Nothing to delete.
+  //   style: 'clean'  -> crisp original logos, force-tinted to one accent color
+  //   style: 'sketch' -> DORMANT Rough.js hand-drawn path (kept for reversibility;
+  //                      dropped as the shipped look — it can't render these logos
+  //                      crisply). Flip here to A/B it; nothing was deleted.
+  // Reverting the feature = flip these values and reload. Nothing to delete.
   TECH_ICONS: {
     enabled: true,
-    style: 'sketch', // 'sketch' | 'clean'
+    style: 'clean', // 'clean' | 'sketch'
   },
 
   socialMedia: [
