@@ -561,7 +561,7 @@ const Hero = () => {
         </h3>
 
         <p className="hero-fade" style={{ transitionDelay: '420ms' }}>
-          I'm a backend developerhttps://github.com/SunnyBagal/Portfolio_v1.git, working mainly with Node.js, TypeScript, and
+          I'm a backend developer, working mainly with Node.js, TypeScript, and
           PostgreSQL. I like understanding how things actually work instead of gluing libraries
           together, which is how I've ended up building my own sync engine, search pipeline, and job
           queue setups from scratch.
