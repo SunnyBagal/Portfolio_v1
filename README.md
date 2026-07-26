@@ -1,87 +1,99 @@
 <div align="center">
-  <img alt="Logo" src="https://raw.githubusercontent.com/bchiang7/v4/main/src/images/logo.png" width="100" />
+  <img alt="SB" src="src/images/logo.png" width="88" />
 </div>
-<h1 align="center">
-  brittanychiang.com - v4
-</h1>
+
+<h1 align="center">Sunny Bagal — Personal Portfolio</h1>
+
 <p align="center">
-  The fourth iteration of <a href="https://brittanychiang.com" target="_blank">brittanychiang.com</a> built with <a href="https://www.gatsbyjs.org/" target="_blank">Gatsby</a> and hosted with <a href="https://www.netlify.com/" target="_blank">Netlify</a>
-</p>
-<p align="center">
-  Previous iterations:
-  <a href="https://github.com/bchiang7/v1" target="_blank">v1</a>,
-  <a href="https://github.com/bchiang7/v2" target="_blank">v2</a>,
-  <a href="https://github.com/bchiang7/bchiang7.github.io" target="_blank">v3</a>
-</p>
-<p align="center">
-  <a href="https://app.netlify.com/sites/brittanychiang/deploys" target="_blank">
-    <img src="https://api.netlify.com/api/v1/badges/1963b488-7b78-48c9-9e2d-6fb5e47ab3af/deploy-status" alt="Netlify Status" />
-  </a>
+  A dark, gold-accented portfolio for a backend developer — built with Gatsby,
+  styled-components, and a handful of hand-built interactions.
 </p>
 
-![demo](https://raw.githubusercontent.com/bchiang7/v4/main/src/images/demo.png)
+---
 
-## 🚨 Forking this repo (please read!)
+## About
 
-Many people have contacted me asking me if they can use this code for their own website, and the answer to that question is usually **yes, with attribution**.
+This is my personal site. I'm a backend developer from Navi Mumbai who likes the
+hard parts under the surface — concurrency, sync engines, queues, and data models
+that stay correct when many things happen at once. The site is a static Gatsby
+build: content lives in Markdown, everything renders at build time, and the whole
+thing is a single warm-charcoal + gold theme driven entirely by CSS custom
+properties.
 
-I value keeping my site open source, but as you all know, _**plagiarism is bad**_. It's always disheartening whenever I find that someone has copied my site without giving me credit. I spent a non-trivial amount of effort building and designing this iteration of my website, and I am proud of it! All I ask of you all is to not claim this effort as your own.
+It started life as an open-source Gatsby portfolio scaffold and has since been
+rewritten top to bottom — theme, type, copy, structure, and every interaction
+below.
 
-Please also note that I did not build this site with the intention of it being a starter theme, so if you have questions about implementation, please refer to the [Gatsby docs](https://www.gatsbyjs.org/docs/).
+## Highlights
 
-### TL;DR
+A few things I built into it rather than pulling off a shelf:
 
-Yes, you can fork this repo. Please give me proper credit by linking back to [brittanychiang.com](https://brittanychiang.com). Thanks!
+- **Single-token gold theme** — every colour flows from CSS custom properties in
+  `src/styles/variables.js`, so the palette is one place to change.
+- **Terminal wordmark logo** — collapses to `SB_` and expands to `Sunny Bagal_`
+  on hover, with a blinking caret.
+- **Counter loader** — a `00 → 100` count-up that slides away to reveal the hero.
+- **Split-flap contact board** — a Vestaboard-style flip board (ported to
+  `framer-motion`) that cycles through messages when the section scrolls in.
+- **Ambient detail** — a static film-grain overlay, a custom dot-and-ring cursor,
+  a scroll-progress bar, section-underline draw-ins, and a hand-drawn (Rough.js)
+  tech-stack backdrop behind the About section.
+- **Motion that behaves** — everything above respects `prefers-reduced-motion`
+  and renders in its final state when motion is reduced.
 
-## 🛠 Installation & Set Up
+## Tech
 
-1. Install the Gatsby CLI
+- **Framework:** [Gatsby](https://www.gatsbyjs.com/) (React 17, static generation)
+- **Styling:** [styled-components](https://styled-components.com/) (primary),
+  [Tailwind CSS](https://tailwindcss.com/) for a few utilities (prefixed, no preflight)
+- **Motion:** [framer-motion](https://www.framer.com/motion/), plus [Rough.js](https://roughjs.com/)
+- **Content:** Markdown + GraphQL via `gatsby-transformer-remark`
+- **Type:** Space Grotesk + JetBrains Mono, self-hosted via `@fontsource`
 
-   ```sh
-   npm install -g gatsby-cli
-   ```
+## Getting started
 
-2. Install and use the correct version of Node using [NVM](https://github.com/nvm-sh/nvm)
+Requires **Node 18** (there's an `.nvmrc`).
 
-   ```sh
-   nvm install
-   ```
+```sh
+nvm use          # or: nvm install
+npm install
+npm start        # dev server with hot reload → http://localhost:8000
+```
 
-3. Install dependencies
+### Other commands
 
-   ```sh
-   yarn
-   ```
+```sh
+npm run build    # production build
+npm run serve    # preview the production build locally
+npm run clean    # clear Gatsby's cache and public/ dir
+npm run format   # Prettier over JS/JSON/MD
+```
 
-4. Start the development server
+## Project layout
 
-   ```sh
-   npm start
-   ```
+```
+content/                  Markdown content (featured/, projects/, jobs/, posts/)
+src/
+  components/
+    sections/             Hero, About, Jobs, Featured, Projects, Contact
+    ui/                   cursor, film-grain, scroll-fx, dot-background,
+                          tech-stack-icons, text-flipping-board
+    icons/                svg icon set + the terminal wordmark logo
+  styles/                 variables (theme tokens), mixins, GlobalStyle, fonts
+  config.js               social links, nav, and the TECH_ICONS backdrop toggle
+gatsby-config.js          plugins + site metadata
+gatsby-node.js            builds blog/tag pages, webpack aliases
+```
 
-## 🚀 Building and Running for Production
+## Editing content
 
-1. Generate a full static production build
+Projects, jobs, and posts are Markdown files under `content/` with frontmatter —
+add or edit a file in the right subfolder and it shows up on the next build.
+The curated "other things I've built" cards live directly in
+`src/components/sections/projects.js`.
 
-   ```sh
-   npm run build
-   ```
+## Credits
 
-1. Preview the site as it will appear once deployed
-
-   ```sh
-   npm run serve
-   ```
-
-## 🎨 Color Reference
-
-| Color          | Hex                                                                |
-| -------------- | ------------------------------------------------------------------ |
-| Navy           | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) `#0a192f` |
-| Light Navy     | ![#112240](https://via.placeholder.com/10/0a192f?text=+) `#112240` |
-| Lightest Navy  | ![#233554](https://via.placeholder.com/10/303C55?text=+) `#233554` |
-| Slate          | ![#8892b0](https://via.placeholder.com/10/8892b0?text=+) `#8892b0` |
-| Light Slate    | ![#a8b2d1](https://via.placeholder.com/10/a8b2d1?text=+) `#a8b2d1` |
-| Lightest Slate | ![#ccd6f6](https://via.placeholder.com/10/ccd6f6?text=+) `#ccd6f6` |
-| White          | ![#e6f1ff](https://via.placeholder.com/10/e6f1ff?text=+) `#e6f1ff` |
-| Green          | ![#64ffda](https://via.placeholder.com/10/64ffda?text=+) `#64ffda` |
+The initial Gatsby scaffold was adapted from an open-source portfolio starter
+([source](https://github.com/bchiang7/v4)); it's since diverged significantly.
+Design lineage is credited in the site footer.
