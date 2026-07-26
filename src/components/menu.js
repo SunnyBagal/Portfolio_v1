@@ -124,7 +124,6 @@ const StyledSidebar = styled.aside`
     li {
       position: relative;
       margin: 0 auto 20px;
-      counter-increment: item 1;
       font-size: clamp(var(--fz-sm), 4vw, var(--fz-lg));
 
       @media (max-width: 600px) {
@@ -132,7 +131,7 @@ const StyledSidebar = styled.aside`
       }
 
       &:before {
-        content: '0' counter(item) '.';
+        content: '//';
         display: block;
         margin-bottom: 5px;
         color: var(--green);
@@ -144,6 +143,7 @@ const StyledSidebar = styled.aside`
       ${({ theme }) => theme.mixins.link};
       width: 100%;
       padding: 3px 20px 20px;
+      text-transform: lowercase;
     }
   }
 

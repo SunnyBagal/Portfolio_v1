@@ -1,7 +1,7 @@
 ---
 date: '2'
 title: 'Linea'
-cover: './recall_img3.png'
+cover: './linea1.png'
 github: 'https://github.com/SunnyBagal/Linea'
 external: 'https://linea.sunnybagal.com'
 tech:

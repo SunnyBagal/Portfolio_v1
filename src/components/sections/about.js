@@ -21,9 +21,15 @@ const StyledAboutSection = styled.section`
   }
 `;
 const StyledText = styled.div`
+  p {
+    color: var(--light-slate);
+  }
+
   ul.skills-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(140px, 200px));
+    grid-template-rows: repeat(4, auto);
+    grid-auto-flow: column;
     grid-gap: 0 10px;
     padding: 0;
     margin: 20px 0 0 0;
@@ -63,7 +69,6 @@ const StyledPic = styled.div`
     position: relative;
     width: 100%;
     border-radius: var(--border-radius);
-    background-color: var(--green);
 
     &:hover,
     &:focus {
@@ -76,40 +81,27 @@ const StyledPic = styled.div`
 
       .img {
         filter: none;
-        mix-blend-mode: normal;
       }
     }
 
     .img {
       position: relative;
       border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(100%) contrast(1);
-      transition: var(--transition);
+      filter: grayscale(100%) contrast(1.05);
+      transition: filter 0.3s var(--easing);
     }
 
-    &:before,
     &:after {
       content: '';
       display: block;
       position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--border-radius);
-      transition: var(--transition);
-    }
-
-    &:before {
-      top: 0;
-      left: 0;
-      background-color: var(--navy);
-      mix-blend-mode: screen;
-    }
-
-    &:after {
-      border: 2px solid var(--green);
       top: 14px;
       left: 14px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--green);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
       z-index: -1;
     }
   }
@@ -127,15 +119,18 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
+  // Column-first order (grid flows top-to-bottom, then to the next column):
+  // Column 1 → TypeScript, Node.js, PostgreSQL, Redis
+  // Column 2 → Next.js, Prisma / Drizzle, WebSockets, BullMQ
   const skills = [
-    'Python',
-    'JavaScript',
     'TypeScript',
     'Node.js',
-    'Express.js',
-    'Tailwind CSS',
-    'React/Next',
-    'PostgreSQL/MongoDB/Redis',
+    'PostgreSQL',
+    'Redis',
+    'Next.js',
+    'Prisma / Drizzle',
+    'WebSockets',
+    'BullMQ',
   ];
 
   return (
@@ -147,26 +142,27 @@ const About = () => {
         <StyledText>
           <div>
             <p>
-              Hello! I’m a developer who enjoys building things that live on the internet. I like
-              building things that are simple on the surface and thoughtful underneath. I enjoy
-              solving problems — especially the kind that make you question your life choices at 2
-              AM — which is where my interest in Data Structures and Algorithms comes in.
+              I’m a backend developer from Navi Mumbai. Most of my work lives behind the UI — APIs,
+              queues, WebSocket servers, and the database schemas underneath them. I got into
+              backend because I like problems with sharp edges: race conditions, sync conflicts, and
+              the bugs that only appear when two users act at the same time.
             </p>
 
             <p>
-              Over time, that curiosity turned into a strong foundation in Python, JavaScript,
-              React, and Node.js. I enjoy working at the intersection of logic and design, where
-              creating smooth user experiences meets writing clean, scalable code.
+              The best example is Linea, a real-time collaborative whiteboard I designed and shipped
+              to production. Every edit is an operation in an append-only log — one mechanism that
+              powers live multiplayer sync, instant hydration, undo via compensating operations, and
+              a time-travel slider that replays a board’s entire history.
             </p>
 
             <p>
-              Currently, I’m a <u>final-year student</u>, focused on improving my problem-solving
-              skills and building real-world projects that push me to grow as a developer. Most of
-              my learning comes from experimenting, breaking things, and figuring out how to make
-              them better.
+              Before that, I was Technical Head at InteleCorp, where I led the backend for GeoGrid,
+              a geospatial lead-generation platform, and built Recall, a link-saving app with hybrid
+              vector + keyword search. I recently graduated in Computer Engineering from NMIMS and
+              I’m now interviewing for backend roles.
             </p>
 
-            <p>Here are a few technologies I’ve been working with recently:</p>
+            <p>Technologies I work with daily:</p>
           </div>
 
           <ul className="skills-list">

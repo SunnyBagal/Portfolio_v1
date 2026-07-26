@@ -21,8 +21,16 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background-color: var(--lightest-navy);
+    background-color: color-mix(in srgb, var(--accent) 30%, transparent);
     color: var(--lightest-slate);
+  }
+
+  /* Hide the native cursor only where the custom cursor is active (fine pointer). */
+  @media (pointer: fine) {
+    body.custom-cursor-active,
+    body.custom-cursor-active * {
+      cursor: none !important;
+    }
   }
 
   /* Provide basic, default focus styles.*/
@@ -172,11 +180,13 @@ const GlobalStyle = createGlobalStyle`
   .big-heading {
     margin: 0;
     font-size: clamp(40px, 8vw, 80px);
+    letter-spacing: -0.02em;
   }
 
   .medium-heading {
     margin: 0;
     font-size: clamp(40px, 8vw, 60px);
+    letter-spacing: -0.02em;
   }
 
   .numbered-heading {
@@ -186,21 +196,19 @@ const GlobalStyle = createGlobalStyle`
     margin: 10px 0 40px;
     width: 100%;
     font-size: clamp(26px, 5vw, var(--fz-heading));
+    text-transform: lowercase;
     white-space: nowrap;
 
     &:before {
       position: relative;
-      bottom: 4px;
-      counter-increment: section;
-      content: '0' counter(section) '.';
+      content: '//';
       margin-right: 10px;
       color: var(--green);
       font-family: var(--font-mono);
       font-size: clamp(var(--fz-md), 3vw, var(--fz-xl));
-      font-weight: 400;
+      font-weight: 500;
 
       @media (max-width: 480px) {
-        margin-bottom: -3px;
         margin-right: 5px;
       }
     }
@@ -224,6 +232,19 @@ const GlobalStyle = createGlobalStyle`
       @media (max-width: 600px) {
         margin-left: 10px;
       }
+    }
+  }
+
+  /* "// section" underline draws from 0 → full width when it scrolls into view
+     (.in-view is toggled by ScrollFx). Static full-width under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .numbered-heading:after {
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.6s var(--easing);
+    }
+    .numbered-heading.in-view:after {
+      transform: scaleX(1);
     }
   }
 

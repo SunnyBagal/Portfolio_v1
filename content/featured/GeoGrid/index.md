@@ -1,7 +1,7 @@
 ---
 date: '3'
 title: 'GeoGrid'
-cover: './geogrid_img2.png'
+cover: './4.png'
 external: 'https://github.com/SunnyBagal/GeoGrid'
 cta: 'https://github.com/SunnyBagal/GeoGrid'
 tech:

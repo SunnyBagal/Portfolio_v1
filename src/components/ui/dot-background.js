@@ -18,7 +18,7 @@ export function DotBackground({ children, className }) {
           className={cn(
             'tw-absolute tw-inset-0',
             '[background-size:20px_20px]',
-            '[background-image:radial-gradient(circle,var(--dark-slate)_1px,transparent_1px)]',
+            '[background-image:radial-gradient(circle,var(--dot)_1px,transparent_1px)]',
           )}
         />
         {/* Radial fade mask — dots fade out toward the edges */}

@@ -256,48 +256,36 @@ const StyledProject = styled.li`
     a {
       width: 100%;
       height: 100%;
-      background-color: var(--green);
+      border: 1px solid var(--lightest-navy);
       border-radius: var(--border-radius);
+      overflow: hidden;
       vertical-align: middle;
+      transition: border-color 0.4s ease;
 
       &:hover,
       &:focus {
-        background: transparent;
         outline: 0;
-
-        &:before,
-        .img {
-          background: transparent;
-          filter: none;
-        }
-      }
-
-      &:before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 3;
-        transition: var(--transition);
-        background-color: var(--navy);
-        mix-blend-mode: screen;
+        border-color: var(--green);
       }
     }
 
     .img {
+      /* Full original colour — no tint, blend, or desaturation. */
       border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(100%) contrast(1) brightness(90%);
+      transition: transform 0.4s ease;
 
       @media (max-width: 768px) {
         object-fit: cover;
         width: auto;
         height: 100%;
-        filter: grayscale(100%) contrast(1) brightness(50%);
+      }
+    }
+
+    /* Screenshot lifts on hover — motion only when the user allows it. */
+    @media (prefers-reduced-motion: no-preference) {
+      a:hover .img,
+      a:focus .img {
+        transform: scale(1.03);
       }
     }
   }
@@ -362,7 +350,7 @@ const Featured = () => {
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">Featured Project</p>
+                    <p className="project-overline">case study</p>
 
                     <h3 className="project-title">
                       <a href={external}>{title}</a>

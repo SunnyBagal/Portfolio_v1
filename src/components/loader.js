@@ -1,99 +1,102 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
-import anime from 'animejs';
 import styled from 'styled-components';
-import { IconLoader } from '@components/icons';
+
+const COUNT_MS = 1200; // count 00 → 100
+const HOLD_MS = 150; // pause on 100 before leaving
+const SLIDE_MS = 700; // overlay slide-up duration
 
 const StyledLoader = styled.div`
-  ${({ theme }) => theme.mixins.flexCenter};
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--dark-navy);
+  inset: 0;
   z-index: 99;
+  background-color: var(--bg-darkest);
+  transform: translateY(0);
 
-  .logo-wrapper {
-    width: max-content;
-    max-width: 100px;
-    transition: var(--transition);
-    opacity: ${props => (props.isMounted ? 1 : 0)};
-    svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      margin: 0 auto;
-      fill: none;
-      user-select: none;
-      #B {
-        opacity: 0;
-      }
-    }
+  &.leaving {
+    transform: translateY(-100%);
+    transition: transform ${SLIDE_MS}ms cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .loader-count {
+    position: absolute;
+    left: 8vw;
+    bottom: 6vh;
+    width: min(560px, 80vw);
+  }
+
+  .loader-line {
+    height: 1px;
+    width: 0;
+    margin-bottom: 20px;
+    background-color: var(--border);
+  }
+
+  .loader-num {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(64px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
   }
 `;
 
-const Loader = ({ finishLoading }) => {
-  const [isMounted, setIsMounted] = useState(false);
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
 
-  const animate = () => {
-    const loader = anime.timeline({
-      complete: () => finishLoading(),
-    });
-
-    loader
-      .add({
-        targets: '#logo path',
-        delay: 300,
-        duration: 1500,
-        easing: 'easeInOutQuart',
-        strokeDashoffset: [anime.setDashoffset, 0],
-      })
-      .add({
-        targets: '#logo #B',
-        duration: 700,
-        easing: 'easeInOutQuart',
-        opacity: 1,
-      })
-      .add({
-        targets: '#logo',
-        delay: 500,
-        duration: 300,
-        easing: 'easeInOutQuart',
-        opacity: 0,
-        scale: 0.1,
-      })
-      .add({
-        targets: '.loader',
-        duration: 200,
-        easing: 'easeInOutQuart',
-        opacity: 0,
-        zIndex: -1,
-      });
-  };
+const Loader = ({ onReveal, onComplete }) => {
+  const [count, setCount] = useState(0);
+  const [leaving, setLeaving] = useState(false);
+  const lineRef = useRef(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setIsMounted(true), 10);
-    animate();
-    return () => clearTimeout(timeout);
+    let raf = null;
+    let holdTimer = null;
+    let doneTimer = null;
+    const start = performance.now();
+
+    const tick = now => {
+      const t = Math.min(1, (now - start) / COUNT_MS);
+      const p = easeOutCubic(t); // slows as it nears 100
+      setCount(Math.round(p * 100));
+      if (lineRef.current) {
+        lineRef.current.style.width = `${p * 100}%`;
+      }
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        holdTimer = setTimeout(() => {
+          setLeaving(true); // overlay slides up …
+          onReveal(); // … and the hero mounts + starts revealing underneath now
+          doneTimer = setTimeout(onComplete, SLIDE_MS);
+        }, HOLD_MS);
+      }
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      if (holdTimer) clearTimeout(holdTimer);
+      if (doneTimer) clearTimeout(doneTimer);
+    };
   }, []);
 
   return (
-    <StyledLoader className="loader" isMounted={isMounted}>
-      <Helmet bodyAttributes={{ class: `hidden` }} />
-
-      <div className="logo-wrapper">
-        <IconLoader />
+    <StyledLoader className={`loader${leaving ? ' leaving' : ''}`} aria-hidden="true">
+      <Helmet bodyAttributes={{ class: 'hidden' }} />
+      <div className="loader-count">
+        <div ref={lineRef} className="loader-line" />
+        <div className="loader-num">{String(count).padStart(2, '0')}</div>
       </div>
     </StyledLoader>
   );
 };
 
 Loader.propTypes = {
-  finishLoading: PropTypes.func.isRequired,
+  onReveal: PropTypes.func.isRequired,
+  onComplete: PropTypes.func.isRequired,
 };
 
 export default Loader;

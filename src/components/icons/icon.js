@@ -11,7 +11,6 @@ import {
   IconInstagram,
   IconLeetCode,
   IconLinkedin,
-  IconLoader,
   IconLogo,
   IconPlayStore,
   IconStar,
@@ -23,7 +22,6 @@ const Icon = ({ name }) => {
     case 'AppStore':
       return <IconAppStore />;
     case 'Bookmark':
-      
       return <IconCodepen />;
     case 'External':
       return <IconExternal />;
@@ -39,8 +37,6 @@ const Icon = ({ name }) => {
       return <IconLeetCode />;
     case 'Linkedin':
       return <IconLinkedin />;
-    case 'Loader':
-      return <IconLoader />;
     case 'Logo':
       return <IconLogo />;
     case 'PlayStore':

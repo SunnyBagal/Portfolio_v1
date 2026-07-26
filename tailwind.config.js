@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/components/sections/hero.js', './src/components/ui/**/*.{js,jsx}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   // Prefix all Tailwind classes to avoid collisions with existing styled-components
   // e.g. use "tw-flex" instead of "flex"
   prefix: 'tw-',

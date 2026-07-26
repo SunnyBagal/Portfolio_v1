@@ -3,16 +3,34 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import { Head, Loader, Nav, Social, Email, Footer } from '@components';
 import { GlobalStyle, theme } from '@styles';
+import FilmGrain from '@components/ui/film-grain';
+import Cursor from '@components/ui/cursor';
+import ScrollFx from '@components/ui/scroll-fx';
 
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+  z-index: 2; /* keep content above the fixed film-grain overlay (z-index 1) */
 `;
 
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
+  // isLoading gates the page content; showLoader keeps the overlay mounted
+  // through its slide-out (which begins once the content is already revealed).
   const [isLoading, setIsLoading] = useState(isHome);
+  const [showLoader, setShowLoader] = useState(isHome);
+
+  // Run the loader on every home-page load, but never under reduced motion or
+  // on internal (non-home) routes — those show the page immediately.
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!isHome || reduced) {
+      setIsLoading(false);
+      setShowLoader(false);
+    }
+  }, [isHome]);
 
   // Sets target="_blank" rel="noopener noreferrer" on external links
   const handleExternalLinks = () => {
@@ -54,13 +72,19 @@ const Layout = ({ children, location }) => {
         <ThemeProvider theme={theme}>
           <GlobalStyle />
 
+          <FilmGrain />
+          <Cursor />
+          <ScrollFx />
+
           <a className="skip-to-content" href="#content">
             Skip to Content
           </a>
 
-          {isLoading && isHome ? (
-            <Loader finishLoading={() => setIsLoading(false)} />
-          ) : (
+          {showLoader && (
+            <Loader onReveal={() => setIsLoading(false)} onComplete={() => setShowLoader(false)} />
+          )}
+
+          {!isLoading && (
             <StyledContent>
               <Nav isHome={isHome} />
               <Social isHome={isHome} />

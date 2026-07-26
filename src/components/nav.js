@@ -7,7 +7,7 @@ import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
 import { useScrollDirection, usePrefersReducedMotion } from '@hooks';
 import { Menu } from '@components';
-import { IconLogo, IconHex } from '@components/icons';
+import { IconLogo } from '@components/icons';
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -17,7 +17,7 @@ const StyledHeader = styled.header`
   padding: 0px 50px;
   width: 100%;
   height: var(--nav-height);
-  background-color: rgba(10, 25, 47, 0.85);
+  background-color: color-mix(in srgb, var(--bg) 85%, transparent);
   filter: none !important;
   pointer-events: auto !important;
   user-select: auto !important;
@@ -33,17 +33,17 @@ const StyledHeader = styled.header`
 
   @media (prefers-reduced-motion: no-preference) {
     ${props =>
-    props.scrollDirection === 'up' &&
+      props.scrollDirection === 'up' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
-        background-color: rgba(10, 25, 47, 0.85);
+        background-color: color-mix(in srgb, var(--bg) 85%, transparent);
         box-shadow: 0 10px 30px -10px var(--navy-shadow);
       `};
 
     ${props =>
-    props.scrollDirection === 'down' &&
+      props.scrollDirection === 'down' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
@@ -62,47 +62,74 @@ const StyledNav = styled.nav`
   counter-reset: item 0;
   z-index: 12;
 
+  @keyframes navCaretBlink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
   .logo {
     ${({ theme }) => theme.mixins.flexCenter};
 
     a {
-      color: var(--green);
-      width: 42px;
-      height: 42px;
-      position: relative;
-      z-index: 1;
-
-      .hex-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        @media (prefers-reduced-motion: no-preference) {
-          transition: var(--transition);
-        }
-      }
-
-      .logo-container {
-        position: relative;
-        z-index: 1;
-        svg {
-          fill: none;
-          user-select: none;
-          @media (prefers-reduced-motion: no-preference) {
-            transition: var(--transition);
-          }
-          polygon {
-            fill: var(--navy);
-          }
-        }
-      }
+      /* Fixed hit area sized to the fully-expanded wordmark ("sunny bagal_")
+         plus a small buffer, left-aligned with the collapsed "sb_". Because the
+         anchor never resizes, the hover target is stable — expanding .hide can't
+         move the cursor out and cause the collapse/expand flicker. */
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 13ch;
+      padding: 0 4px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--accent);
 
       &:hover,
       &:focus {
         outline: 0;
-        transform: translate(-4px, -4px);
-        .hex-container {
-          transform: translate(4px, 3px);
+      }
+
+      .logo-term {
+        display: inline-flex;
+        align-items: baseline;
+        white-space: nowrap;
+      }
+
+      .hide {
+        display: inline-block;
+        overflow: hidden;
+        max-width: 0;
+        white-space: pre;
+      }
+
+      .caret {
+        display: inline-block;
+      }
+
+      /* Expand only on fine pointers + when motion is allowed. */
+      @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+        .hide {
+          transition: max-width 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        &:hover .hide,
+        &:focus-visible .hide {
+          max-width: var(--w);
+        }
+      }
+
+      /* Blinking caret (skipped under reduced motion). */
+      @media (prefers-reduced-motion: no-preference) {
+        .caret {
+          animation: navCaretBlink 1.2s steps(1) infinite;
         }
       }
     }
@@ -126,18 +153,26 @@ const StyledLinks = styled.div`
     li {
       margin: 0 5px;
       position: relative;
-      counter-increment: item 1;
       font-size: var(--fz-xs);
 
       a {
-        padding: 10px;
+        padding: 10px 12px;
+        color: var(--light-slate);
+        text-transform: lowercase;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
 
         &:before {
-          content: '0' counter(item) '.';
-          margin-right: 5px;
+          content: '//';
+          margin-right: 3px;
           color: var(--green);
-          font-size: var(--fz-xxs);
-          text-align: right;
+          transition: var(--transition);
+        }
+
+        &:hover,
+        &:focus {
+          color: var(--green);
+          background-color: color-mix(in srgb, var(--accent) 8%, transparent);
         }
       }
     }
@@ -185,21 +220,11 @@ const Nav = ({ isHome }) => {
     <div className="logo" tabIndex="-1">
       {isHome ? (
         <a href="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
-          <div className="logo-container">
-            <IconLogo />
-          </div>
+          <IconLogo />
         </a>
       ) : (
         <Link to="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
-          <div className="logo-container">
-            <IconLogo />
-          </div>
+          <IconLogo />
         </Link>
       )}
     </div>

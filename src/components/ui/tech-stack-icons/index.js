@@ -22,8 +22,8 @@ const ROUGH_OPTIONS = {
 };
 
 // ─── Layer appearance ─────────────────────────────────────────────────────────
-const ACCENT = 'var(--green)'; // monochrome accent tint for the whole layer
-const LAYER_OPACITY = 0.1; // quiet backdrop — within the 0.08–0.12 band
+const ACCENT = 'var(--slate)'; // muted monochrome tint for the whole layer
+const LAYER_OPACITY = 0.5; // quiet backdrop — nudged a touch brighter
 
 // ─── Placement ────────────────────────────────────────────────────────────────
 // The layer mounts INSIDE the About section (position: relative), so icons are
