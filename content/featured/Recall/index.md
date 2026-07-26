@@ -3,7 +3,7 @@ date: '4'
 title: 'Recall'
 cover: './recall_img3.png'
 github: 'https://github.com/SunnyBagal/Recall'
-external: 'https://recall-swart-eight.vercel.app'
+external: 'https://recall.sunnybagal.com'
 tech:
   - React
   - TypeScript
