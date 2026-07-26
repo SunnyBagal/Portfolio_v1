@@ -206,7 +206,7 @@ const Projects = () => {
       return;
     }
     sr.reveal(revealTitle.current, srConfig());
-    revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
+    revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 50)));
   }, []);
 
   const projectInner = project => {
