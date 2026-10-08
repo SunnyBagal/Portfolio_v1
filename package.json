@@ -73,7 +73,11 @@
   },
   "overrides": {
     "graphql": "15.8.0",
-    "cheerio": "1.0.0-rc.12"
+    "cheerio": "1.0.0-rc.12",
+    "sharp": "$sharp"
+  },
+  "resolutions": {
+    "sharp": "0.34.5"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
