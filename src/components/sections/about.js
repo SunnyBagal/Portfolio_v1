@@ -8,6 +8,7 @@ import TechStackIcons from '@components/ui/tech-stack-icons';
 
 const StyledAboutSection = styled.section`
   position: relative; /* anchors the decorative tech-icon gutter layer */
+  isolation: isolate; /* keeps that z-index: -1 layer above the page, so its logos can be hovered */
   max-width: 900px;
 
   .inner {

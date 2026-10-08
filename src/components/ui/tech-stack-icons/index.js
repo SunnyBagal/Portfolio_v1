@@ -5,6 +5,28 @@ import rough from 'roughjs';
 import { TECH_ICONS } from '@config';
 import { usePrefersReducedMotion } from '@hooks';
 import TECH_ICON_DATA from './icon-data';
+import javascriptColor from './logos/color/javascript.svg';
+import nextjsColor from './logos/color/nextjs.svg';
+import nodejsColor from './logos/color/nodejs.svg';
+import postgresqlColor from './logos/color/postgresql.svg';
+import pythonColor from './logos/color/python.svg';
+import reactColor from './logos/color/react.svg';
+import redisColor from './logos/color/redis.svg';
+import typescriptColor from './logos/color/typescript.svg';
+
+// Full-colour logos (svgl.app; redis is the Simple Icons "R" mark in brand red, since
+// svgl only has the old stacked logo) revealed on hover, keyed by icon slug. Rendered as
+// <img> so each file's gradient/mask ids stay scoped to that file.
+const COLOR_LOGOS = {
+  javascript: javascriptColor,
+  nextdotjs: nextjsColor,
+  nodedotjs: nodejsColor,
+  postgresql: postgresqlColor,
+  python: pythonColor,
+  react: reactColor,
+  redis: redisColor,
+  typescript: typescriptColor,
+};
 
 // ─── Rough.js tuning ──────────────────────────────────────────────────────────
 // Nudge these to taste. Goal is CRISP + RECOGNIZABLE, not chaotic scribble:
@@ -181,7 +203,6 @@ const StyledIconLayer = styled.div`
   z-index: -1; /* behind the section's content */
   pointer-events: none;
   color: ${ACCENT};
-  opacity: ${LAYER_OPACITY};
   will-change: transform;
   transition: transform 0.4s var(--easing);
 
@@ -196,11 +217,42 @@ const StyledIconLayer = styled.div`
   .tech-icon {
     position: absolute;
     display: block;
+    pointer-events: auto; /* the layer ignores the mouse; each logo takes hover */
 
     svg {
       width: 100%;
       height: 100%;
       overflow: visible;
+    }
+  }
+
+  /* Hover reveal: the muted tint crossfades to the full-colour svgl logo. The
+     colour <img> sits on the same box; the transition is opacity only. */
+  .tech-icon-mono,
+  .tech-icon-color {
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.35s var(--easing);
+  }
+
+  .tech-icon-mono {
+    opacity: ${LAYER_OPACITY};
+  }
+
+  .tech-icon-color {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    filter: none; /* decorative (alt=""), so opt out of GlobalStyle's img[alt=''] blur */
+  }
+
+  .tech-icon:hover {
+    .tech-icon-mono {
+      opacity: 0;
+    }
+    .tech-icon-color {
+      opacity: 1;
     }
   }
 
@@ -309,7 +361,12 @@ const TechStackIcons = () => {
               '--drift-dur': `${8 + (i % 4) * 1.5}s`,
               '--drift-delay': `${(i % 5) * 0.7}s`,
             }}>
-            <TechIcon icon={icon} style={style} />
+            <span className="tech-icon-mono">
+              <TechIcon icon={icon} style={style} />
+            </span>
+            {COLOR_LOGOS[p.slug] && (
+              <img className="tech-icon-color" src={COLOR_LOGOS[p.slug]} alt="" />
+            )}
           </span>
         );
       })}
