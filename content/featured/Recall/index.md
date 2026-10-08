@@ -1,5 +1,5 @@
 ---
-date: '4'
+date: '2'
 title: 'Recall'
 cover: './recall_img3.png'
 github: 'https://github.com/SunnyBagal/Recall'

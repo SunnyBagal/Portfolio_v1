@@ -1,5 +1,5 @@
 ---
-date: '2'
+date: '1'
 title: 'Linea'
 cover: './linea1.png'
 github: 'https://github.com/SunnyBagal/Linea'
