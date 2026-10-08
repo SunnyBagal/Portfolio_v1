@@ -20,4 +20,5 @@ tech:
   - Vercel
   - Railway
 ---
-A real-time collaborative whiteboard (think Excalidraw) where multiple people sketch on an infinite canvas together. Every action — draw, move, edit, delete — is recorded as an operation in an append-only op-log, and that single mechanism powers live multiplayer sync, instant hydration when someone joins a room, undo via compensating operations, and a time-travel slider that replays the board's entire history. Hand-drawn shapes are rendered with Rough.js over the Canvas 2D API, with pan/zoom, selection, and a text tool on top. Built as a Turborepo monorepo with Next.js, TypeScript, an Express HTTP + WebSocket backend, PostgreSQL, and Prisma.
+
+A real-time collaborative whiteboard (think Excalidraw). Every action is an operation in an append-only op-log with atomic per-room sequence numbers, and that one mechanism drives multiplayer sync, join-time hydration, undo via compensating operations, and a time-travel slider over the board’s history. Moving the hydration fold from quadratic to linear made it ~300× faster; the server sustains ~800 acked ops/sec.
