@@ -412,7 +412,7 @@ const StyledHeroSection = styled.section`
 
   .status-line {
     margin-top: 20px;
-    max-width: 540px;
+    max-width: none; /* run full width so the line doesn't wrap on desktop */
     font-family: var(--font-mono);
     font-size: var(--fz-sm);
     color: var(--light-slate);
@@ -596,7 +596,8 @@ const Hero = () => {
           <a href="https://linea.sunnybagal.com" target="_blank" rel="noopener noreferrer">
             Linea
           </a>
-          , my real-time whiteboard → open to backend SDE-1 roles, 📍 Navi Mumbai, open to
+          , my real-time whiteboard → open to backend{' '}
+          <span style={{ whiteSpace: 'nowrap' }}>SDE-1 roles</span>, 📍 Navi Mumbai, open to
           relocating.
         </p>
 
