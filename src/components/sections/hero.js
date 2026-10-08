@@ -74,13 +74,27 @@ const TIRED_TICKS = 15;
 
 // Direction from angle
 const angleToDir = angle => {
-  if (angle > -22.5 && angle <= 22.5) return 'E';
-  if (angle > 22.5 && angle <= 67.5) return 'SE';
-  if (angle > 67.5 && angle <= 112.5) return 'S';
-  if (angle > 112.5 && angle <= 157.5) return 'SW';
-  if (angle > -67.5 && angle <= -22.5) return 'NE';
-  if (angle > -112.5 && angle <= -67.5) return 'N';
-  if (angle > -157.5 && angle <= -112.5) return 'NW';
+  if (angle > -22.5 && angle <= 22.5) {
+    return 'E';
+  }
+  if (angle > 22.5 && angle <= 67.5) {
+    return 'SE';
+  }
+  if (angle > 67.5 && angle <= 112.5) {
+    return 'S';
+  }
+  if (angle > 112.5 && angle <= 157.5) {
+    return 'SW';
+  }
+  if (angle > -67.5 && angle <= -22.5) {
+    return 'NE';
+  }
+  if (angle > -112.5 && angle <= -67.5) {
+    return 'N';
+  }
+  if (angle > -157.5 && angle <= -112.5) {
+    return 'NW';
+  }
   return 'W';
 };
 
@@ -125,6 +139,9 @@ function useNeko(active, mode) {
   const stateRef = useRef(null);
   const tickRef = useRef(null);
   const wanderRef = useRef(null); // wander sit timer
+  // Mode changes don't recreate the cat — we use a ref so the tick closure
+  // always reads the latest value without triggering a new effect.
+  const modeRef = useRef(mode);
 
   // Helper: init/reset state
   const initState = () => ({
@@ -142,7 +159,9 @@ function useNeko(active, mode) {
   // Helper: set sprite
   const setSprite = (name, frame) => {
     const el = elRef.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     const frames = SPRITES[name] || SPRITES.idle;
     const [col, row] = frames[frame % frames.length];
     el.style.backgroundPosition = `${col * 32}px ${row * 32}px`;
@@ -151,7 +170,9 @@ function useNeko(active, mode) {
   // Helper: move cat element
   const moveTo = (x, y) => {
     const el = elRef.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
   };
@@ -248,10 +269,8 @@ function useNeko(active, mode) {
           moveTo(s.x, s.y);
           setSprite(angleToDir(Math.atan2(dy, dx) * (180 / Math.PI)), s.frame);
         }
-      }
-
-      // ── MODE 1: flee ────────────────────────────────────────────────────
-      else if (currentMode === 1) {
+      } else if (currentMode === 1) {
+        // ── MODE 1: flee ──────────────────────────────────────────────────
         const dx = s.x - s.mouseX; // reversed: away from cursor
         const dy = s.y - s.mouseY;
         const dist = Math.hypot(dx, dy);
@@ -283,11 +302,11 @@ function useNeko(active, mode) {
           const fleeAngle = Math.atan2(dy, dx) * (180 / Math.PI);
           setSprite(angleToDir(fleeAngle), s.frame);
         }
-      }
-
-      // ── MODE 2: wander ──────────────────────────────────────────────────
-      else if (currentMode === 2) {
-        if (s.sitting) return; // waiting on a target — skip movement
+      } else if (currentMode === 2) {
+        // ── MODE 2: wander ────────────────────────────────────────────────
+        if (s.sitting) {
+          return;
+        } // waiting on a target — skip movement
 
         const tx = s.wanderTarget.x;
         const ty = s.wanderTarget.y;
@@ -302,7 +321,9 @@ function useNeko(active, mode) {
           setSprite('sleeping', 0);
           const sitMs = 2000 + Math.random() * 1000;
           wanderRef.current = setTimeout(() => {
-            if (!stateRef.current) return;
+            if (!stateRef.current) {
+              return;
+            }
             stateRef.current.sitting = false;
             stateRef.current.wanderTarget = randTarget();
             stateRef.current.phase = 'running';
@@ -330,9 +351,7 @@ function useNeko(active, mode) {
     };
   }, [active]); // only re-run when active changes
 
-  // ── Mode changes don't recreate the cat — we use a ref so the tick closure
-  //    always reads the latest value without triggering a new effect.
-  const modeRef = useRef(mode);
+  // ── Keep modeRef in sync with the latest mode.
   useEffect(() => {
     modeRef.current = mode;
     // When switching to wander mode, reset sitting + pick new target immediately
@@ -516,7 +535,9 @@ const Hero = () => {
   // Attach click handler to the cat element for mode cycling
   useEffect(() => {
     const el = nekoElRef.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     const onClick = e => {
       e.stopPropagation();
       setMode(m => (m + 1) % 3);
@@ -526,7 +547,9 @@ const Hero = () => {
   }, [catActive]); // re-attach when cat is (re)created
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      return;
+    }
     const timeout = setTimeout(() => setIsMounted(true), REVEAL_DELAY);
     return () => clearTimeout(timeout);
   }, []);
@@ -561,10 +584,10 @@ const Hero = () => {
         </h3>
 
         <p className="hero-fade" style={{ transitionDelay: '420ms' }}>
-          I'm a backend developer, working mainly with Node.js, TypeScript, and
-          PostgreSQL. I like understanding how things actually work instead of gluing libraries
-          together, which is how I've ended up building my own sync engine, search pipeline, and job
-          queue setups from scratch.
+          I'm a backend developer, working mainly with Node.js, TypeScript, and PostgreSQL. I like
+          understanding how things actually work instead of gluing libraries together, which is how
+          I've ended up building my own sync engine, search pipeline, and job queue setups from
+          scratch.
         </p>
 
         <p className="status-line hero-fade" style={{ transitionDelay: '500ms' }}>
@@ -582,10 +605,10 @@ const Hero = () => {
             !catActive
               ? 'Summon a cat!'
               : mode === 0
-              ? 'Click cat to make it flee'
-              : mode === 1
-              ? 'Click cat to make it explore'
-              : 'Click cat to reset'
+                ? 'Click cat to make it flee'
+                : mode === 1
+                  ? 'Click cat to make it explore'
+                  : 'Click cat to reset'
           }
           aria-label={catActive ? 'Dismiss cat' : 'Summon cat'}>
           {catActive ? MODE_LABELS[mode] : 'hi 🐱'}
