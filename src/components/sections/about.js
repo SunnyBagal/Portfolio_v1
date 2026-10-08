@@ -142,24 +142,22 @@ const About = () => {
         <StyledText>
           <div>
             <p>
-              I’m a backend developer from Navi Mumbai. Most of my work lives behind the UI — APIs,
-              queues, WebSocket servers, and the database schemas underneath them. I got into
-              backend because I like problems with sharp edges: race conditions, sync conflicts, and
-              the bugs that only appear when two users act at the same time.
+              I’m a backend developer from Navi Mumbai. Most of my work lives behind the UI: APIs,
+              queues, WebSocket servers, and the database schemas underneath them. I like problems
+              with sharp edges: race conditions, sync conflicts, and the bugs that only appear when
+              two users act at the same time.
             </p>
 
             <p>
-              The best example is Linea, a real-time collaborative whiteboard I designed and shipped
-              to production. Every edit is an operation in an append-only log — one mechanism that
-              powers live multiplayer sync, instant hydration, undo via compensating operations, and
-              a time-travel slider that replays a board’s entire history.
+              That’s what Linea and Recall are about: an append-only op-log behind a multiplayer
+              whiteboard, and hybrid vector + keyword search in Postgres.
             </p>
 
             <p>
-              Before that, I was Technical Head at InteleCorp, where I led the backend for GeoGrid,
-              a geospatial lead-generation platform, and built Recall, a link-saving app with hybrid
-              vector + keyword search. I recently graduated in Computer Engineering from NMIMS and
-              I’m now interviewing for backend roles.
+              Earlier this year I interned at InteleCorp as Technical Head, leading a four-person
+              team that built GeoGrid, a geospatial lead-generation platform. I graduated in
+              Computer Engineering from NMIMS in 2026 and I’m looking for a backend SDE-1 role, open
+              to relocating.
             </p>
 
             <p>Technologies I work with daily:</p>

@@ -584,18 +584,20 @@ const Hero = () => {
         </h3>
 
         <p className="hero-fade" style={{ transitionDelay: '420ms' }}>
-          I'm a backend developer, working mainly with Node.js, TypeScript, and PostgreSQL. I like
-          understanding how things actually work instead of gluing libraries together, which is how
-          I've ended up building my own sync engine, search pipeline, and job queue setups from
-          scratch.
+          I’m a backend developer working mainly with Node.js, TypeScript, and PostgreSQL. I pick
+          lower-level tools on purpose so I understand what’s underneath: a multiplayer whiteboard
+          on raw WebSockets and an append-only op-log, and RAG search built directly on pgvector and
+          Postgres full-text search, without LangChain.
         </p>
 
         <p className="status-line hero-fade" style={{ transitionDelay: '500ms' }}>
           <span className="prompt">&gt; </span>
+          Try{' '}
           <a href="https://linea.sunnybagal.com" target="_blank" rel="noopener noreferrer">
-            linea.sunnybagal.com
-          </a>{' '}
-          is live · open to backend SDE-1 roles
+            Linea
+          </a>
+          , my real-time whiteboard → open to backend SDE-1 roles, 📍 Navi Mumbai, open to
+          relocating.
         </p>
 
         <StyledHiButton
