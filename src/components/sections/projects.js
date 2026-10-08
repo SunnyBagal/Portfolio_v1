@@ -5,16 +5,30 @@ import sr from '@utils/sr';
 import { Icon } from '@components/icons';
 import { usePrefersReducedMotion } from '@hooks';
 
-// Exactly five curated cards, in order. Todo + FluxChat descriptions/tech are
-// intentional placeholders — fill them in below.
+// Curated cards, rendered in this order.
 const PROJECTS = [
+  {
+    title: 'Payments Wallet',
+    description:
+      'A wallet and transfer service built around one question: what happens when two transfers hit the same account at once? Each transfer runs in a single Postgres transaction, and the debit is a conditional update that only applies if the balance covers the amount, so concurrent transfers can’t overdraw an account or leave one half-applied.',
+    tech: ['TypeScript', 'Node.js', 'PostgreSQL', 'Prisma'],
+    github: 'https://github.com/SunnyBagal/Paytm-',
+  },
   {
     title: 'NeuralCompress',
     description:
-      'Dual-mode image compression. I designed the near-lossless pipeline using a Q-shift DTCWT with a reversible CNN, reaching 100+ dB PSNR, and benchmarked a lossy mode against JPEG and WebP at matched bitrates.',
+      'Dual-mode image compression, built with two teammates. I designed the near-lossless pipeline, a Q-shift DTCWT with a reversible CNN reaching ~100 dB PSNR. The lossy mode uses CompressAI’s pretrained cheng2020-attn model, benchmarked against JPEG and WebP at matched bitrates.',
     tech: ['Python', 'PyTorch', 'CompressAI', 'NumPy'],
     github: 'https://github.com/SunnyBagal/Neural-Compress',
     external: 'https://huggingface.co/spaces/Sunny1110/image-compression',
+  },
+  {
+    title: 'FluxChat',
+    description:
+      'A no-signup real-time chat: create a room, share a 6-character code, talk with up to ten people. Rooms live in server memory, and a raw WebSocket server routes each frame by message type to handle joins, broadcasts, capacity limits, and disconnects. The project that got me comfortable with WebSockets before Linea.',
+    tech: ['TypeScript', 'React', 'Bun', 'ws', 'Tailwind'],
+    github: 'https://github.com/SunnyBagal/FluxChat',
+    external: 'https://chat-application-two-flax.vercel.app',
   },
   {
     title: 'Todo',
@@ -23,21 +37,6 @@ const PROJECTS = [
     tech: ['React', 'Zustand', 'TanStack Query', 'Express', 'MongoDB', 'Zod'],
     github: 'https://github.com/SunnyBagal/Todo_Application',
     external: 'https://todo-application-blgn.vercel.app',
-  },
-  {
-    title: 'FluxChat',
-    description:
-      'A minimal real-time chat where you create a room, share a 6-character code, and talk with up to ten people without signing up. Rooms live entirely in server memory, and the WebSocket server routes every frame by message type to handle joins, broadcasts, capacity limits, and clean disconnects. This was the project that got me comfortable with WebSockets before I built Linea.',
-    tech: ['TypeScript', 'React', 'Bun', 'ws', 'Tailwind'],
-    github: 'https://github.com/SunnyBagal/FluxChat',
-    external: 'https://chat-application-two-flax.vercel.app',
-  },
-  {
-    title: 'Payments Wallet',
-    description:
-      'A wallet and transfer service built to understand transaction isolation properly. Handles concurrent transfers with Serializable isolation and row-level locking so balances never drift under contention.',
-    tech: ['TypeScript', 'Node.js', 'PostgreSQL', 'Prisma'],
-    github: 'https://github.com/SunnyBagal/Paytm-',
   },
 ];
 
