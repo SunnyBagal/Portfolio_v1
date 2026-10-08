@@ -45,7 +45,7 @@ const PLACEMENTS = [
   { slug: 'javascript', side: 'right', gap: 34, top: 6, size: 56 },
   { slug: 'redis', side: 'left', gap: 76, top: 30, size: 56 },
   { slug: 'react', side: 'right', gap: 78, top: 32, size: 72 },
-  { slug: 'tailwindcss', side: 'left', gap: 26, top: 56, size: 68 },
+  { slug: 'postgresql', side: 'left', gap: 26, top: 56, size: 64 },
   { slug: 'typescript', side: 'right', gap: 24, top: 60, size: 54 },
   { slug: 'nodedotjs', side: 'left', gap: 64, top: 82, size: 60 },
   { slug: 'nextdotjs', side: 'right', gap: 66, top: 84, size: 52 },
@@ -122,6 +122,18 @@ const TechIcon = ({ icon, style }) => {
         {icon.paths.map((d, i) => (
           <path key={i} d={d} fill="currentColor" />
         ))}
+        {(icon.cutouts || []).map((c, i) => (
+          <path
+            key={`cut-${i}`}
+            className="cutout"
+            d={c.d}
+            fill={c.fill ? 'var(--navy)' : 'none'}
+            stroke="var(--navy)"
+            strokeWidth={c.strokeWidth}
+            strokeLinecap={c.linecap || 'round'}
+            strokeLinejoin={c.linejoin || 'round'}
+          />
+        ))}
       </svg>
     );
   }
@@ -147,6 +159,15 @@ TechIcon.propTypes = {
     sketchPaths: PropTypes.arrayOf(PropTypes.string),
     sketchViewBox: PropTypes.string,
     forceClean: PropTypes.bool,
+    cutouts: PropTypes.arrayOf(
+      PropTypes.shape({
+        d: PropTypes.string.isRequired,
+        strokeWidth: PropTypes.number.isRequired,
+        fill: PropTypes.bool,
+        linecap: PropTypes.string,
+        linejoin: PropTypes.string,
+      }),
+    ),
   }).isRequired,
   style: PropTypes.oneOf(['sketch', 'clean']).isRequired,
 };
@@ -189,9 +210,9 @@ const StyledIconLayer = styled.div`
      colour can leak through on any path/shape — the robust equivalent of
      inlining + fill override (preferred here over mask-image because the SVGs
      are already inlined). Stroke is left untouched so nothing sprouts an
-     accidental outline. */
+     accidental outline. Cutout detail lines keep their background colour. */
   &[data-style='clean'] .tech-icon svg,
-  &[data-style='clean'] .tech-icon svg * {
+  &[data-style='clean'] .tech-icon svg *:not(.cutout) {
     fill: currentColor;
   }
 
