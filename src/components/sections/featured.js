@@ -58,9 +58,16 @@ const StyledProject = styled.li`
     }
     .project-tech-list {
       justify-content: flex-end;
+      padding-right: 0;
+      padding-left: calc((100% + 10px) / 6);
+
+      @media (max-width: 1080px) {
+        padding-left: calc((100% + 10px) * 3 / 8);
+      }
 
       @media (max-width: 768px) {
         justify-content: flex-start;
+        padding-left: 0;
       }
 
       li {
@@ -187,8 +194,15 @@ const StyledProject = styled.li`
     position: relative;
     z-index: 2;
     margin: 25px 0 10px;
-    padding: 0;
+    /* The image overlaps the content by one grid column (three at <=1080px);
+       pad the tech list by that width plus a gap so it never sits on the image.
+       Mirrored to padding-left for odd rows above. */
+    padding: 0 calc((100% + 10px) / 6) 0 0;
     list-style: none;
+
+    @media (max-width: 1080px) {
+      padding-right: calc((100% + 10px) * 3 / 8);
+    }
 
     li {
       margin: 0 20px 5px 0;
@@ -200,6 +214,7 @@ const StyledProject = styled.li`
 
     @media (max-width: 768px) {
       margin: 10px 0;
+      padding: 0;
 
       li {
         margin: 0 10px 5px 0;
