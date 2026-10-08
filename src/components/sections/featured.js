@@ -353,7 +353,7 @@ const Featured = () => {
                     <p className="project-overline">case study</p>
 
                     <h3 className="project-title">
-                      <a href={external}>{title}</a>
+                      <a href={external || github}>{title}</a>
                     </h3>
 
                     <div

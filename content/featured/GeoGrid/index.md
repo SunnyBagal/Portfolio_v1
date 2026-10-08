@@ -1,9 +1,8 @@
 ---
 date: '3'
 title: 'GeoGrid'
-cover: './4.png'
-external: 'https://github.com/SunnyBagal/GeoGrid'
-cta: 'https://github.com/SunnyBagal/GeoGrid'
+cover: './5.png'
+github: 'https://github.com/SunnyBagal/GeoGrid'
 tech:
   - Next.js
   - React

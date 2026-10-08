@@ -7,6 +7,15 @@
 const path = require('path');
 const _ = require('lodash');
 
+// Declare optional frontmatter fields so queries don't break when no Markdown file sets them.
+exports.createSchemaCustomization = ({ actions }) => {
+  actions.createTypes(`
+    type MarkdownRemarkFrontmatter {
+      cta: String
+    }
+  `);
+};
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
   const postTemplate = path.resolve(`src/templates/post.js`);
