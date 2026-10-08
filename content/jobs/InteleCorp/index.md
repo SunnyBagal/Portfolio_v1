@@ -7,8 +7,8 @@ range: 'Jan - April 2026'
 url: 'https://www.intelebiz.com/'
 ---
 
-- Led a team of developers as Tech Lead, driving backend development and overall system architecture for a scalable lead generation platform
-- Designed and implemented a recursive geographic grid-based data extraction system to overcome API result limitations and ensure near-complete data coverage
-- Architected backend workflows to handle location-based queries, data aggregation, deduplication, and efficient processing of large datasets
-- Collaborated on designing an intelligence layer to analyze business data, including identifying broken websites, outdated systems, and potential acquisition opportunities
-- Ensured scalability and performance by structuring the system to handle recursive data subdivision and parallel processing of grid cells
+- Led a four-person intern team building GeoGrid, a geospatial lead-generation platform for the company’s sales team. Owned the architecture and integrated everyone’s work behind one API.
+- Designed recursive grid subdivision to get past per-query result caps: any cell that hits the cap is split into smaller cells, then results are merged and deduplicated.
+- Replaced square bounding boxes with real city boundaries (Nominatim polygons plus ray-casting point-in-polygon), so only cells inside the boundary are processed. Cached grid cells in Redis.
+- Moved extraction and enrichment onto a BullMQ queue so scans run in the background, and added Stripe checkout for paid plans.
+- Handed the system over to the company’s senior developers at the end of the internship.
