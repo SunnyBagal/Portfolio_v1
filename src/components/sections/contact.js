@@ -33,8 +33,8 @@ const CONTACT_MESSAGES = [
 // "quick flip, then hold ~4s" rather than continuous flipping.
 //   • flip speed  → BOARD_DURATION here (+ BASE_* / scramble count in the board)
 //   • hold length → CYCLE_MS here
-const CYCLE_MS = 5000; // total time per message (flip + hold)
-const BOARD_DURATION = 0.9; // fast-but-legible flip settle
+const CYCLE_MS = 3500; // total time per message (flip + hold)
+const BOARD_DURATION = 0.7; // fast-but-legible flip settle
 
 const StyledContactSection = styled.section`
   max-width: 600px;
